@@ -1,5 +1,6 @@
 import java.util.HashMap;
 
+import geometry.Vec3f;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PVector;
@@ -8,22 +9,22 @@ import processing.event.MouseEvent;
 public class Camera {
 
     protected class Quatior {
-        protected PVector position;
-        protected PVector front;
-        protected PVector up;
-        protected PVector right;
+        protected Vec3f position;
+        protected Vec3f front;
+        protected Vec3f up;
+        protected Vec3f right;
 
         Quatior(float distance) {
-            this.position = new PVector(distance, 0f, 0f);
+            this.position = new Vec3f(distance, 0f, 0f);
 
-            this.up = new PVector(0f, 1f, 0f);
-            this.front = PVector.mult(position, -1f).normalize();
+            this.up = new Vec3f(0f, 1f, 0f);
+            this.front = Vec3f.mult(position, -1f).normalize();
 
             updateRight();
         }
 
         public void updatePosition(float distance) {
-            position = PVector.mult(front, -distance);
+            position = Vec3f.mult(front, -distance);
         }
 
         public void updateRight(){
@@ -39,7 +40,7 @@ public class Camera {
             float cosAngle = PApplet.cos(angle);
             float sinAngle = PApplet.sin(angle);
         
-            front = new PVector(
+            front = new Vec3f(
                 (cosAngle + (1 - cosAngle) * up.x * up.x) * front.x +
                 ((1 - cosAngle) * up.x * up.y - up.z * sinAngle) * front.y +
                 ((1 - cosAngle) * up.x * up.z + up.y * sinAngle) * front.z,
@@ -61,7 +62,7 @@ public class Camera {
             float cosAngle = PApplet.cos(angle);
             float sinAngle = PApplet.sin(angle);
         
-            front = new PVector(
+            front = new Vec3f(
                 (cosAngle + (1 - cosAngle) * right.x * right.x) * front.x +
                 ((1 - cosAngle) * right.x * right.y - right.z * sinAngle) * front.y +
                 ((1 - cosAngle) * right.x * right.z + right.y * sinAngle) * front.z,

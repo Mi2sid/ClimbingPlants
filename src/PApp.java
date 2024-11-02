@@ -1,9 +1,14 @@
+import enums.Colors;
+import geometry.Mesh;
 import processing.core.PApplet;
 import processing.event.MouseEvent;
 
 public class PApp extends PApplet {
     public static PApp applet;
     public Camera camera;
+    public Mesh mesh;
+    public static final String objFolder = "./3d_model/";
+    public static final String objFile = "bunny.obj";
 
     public void settings() {
         size(800, 600, P3D);
@@ -13,6 +18,7 @@ public class PApp extends PApplet {
         background(255);
         PApp.applet = this;
         camera = new Camera(this);
+        mesh = new Mesh(this, loadShape(objFolder + objFile));
     }
 
     public void draw(){
@@ -23,8 +29,9 @@ public class PApp extends PApplet {
         camera.update();
         camera.use();
 
-        fill(Colors.RED.argb);
-        box(100);
+        //fill(Colors.RED.argb);
+        //box(100);
+        mesh.show();
     }
 
     public void keyPressed() {

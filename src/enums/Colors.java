@@ -1,3 +1,5 @@
+package enums;
+
 public enum Colors {
     BACKGROUND(75),
     RED(200, 0, 0);
