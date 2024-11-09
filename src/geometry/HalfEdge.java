@@ -26,7 +26,7 @@ public class HalfEdge {
     }
 
     public HalfEdge setTwin(HalfEdge h) {
-        next = h;
+        twin = h;
         return this;
     }
 
@@ -42,6 +42,6 @@ public class HalfEdge {
 
     @Override
     public int hashCode() {
-        return vertex.hashCode() + next.vertex.hashCode();
+        return vertex.hashCode() ^ next.vertex.hashCode();
     }
 }

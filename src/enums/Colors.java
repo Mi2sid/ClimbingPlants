@@ -2,7 +2,8 @@ package enums;
 
 public enum Colors {
     BACKGROUND(75),
-    RED(200, 0, 0);
+    RED(200, 0, 0),
+    GREEN(0, 200, 0);
 
     public final int argb;
 

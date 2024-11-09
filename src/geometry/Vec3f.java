@@ -14,6 +14,10 @@ public class Vec3f extends PVector {
         this(p.x, p.y, p.z);
     }
 
+    public Vec3f(Vec3f a, Vec3f b) {
+        this(b.x - a.x, b.y - a.y, b.z - a.z);
+    }
+
     public Vec3f cross(Vec3f v){
         return new Vec3f(super.cross((PVector) v));
     }
