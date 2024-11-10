@@ -3,6 +3,7 @@ package geometry;
 public class Face {
     public HalfEdge he;
     public boolean color;
+    
     public Face(HalfEdge h) {
         he = h;
         color = false;

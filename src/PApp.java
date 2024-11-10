@@ -3,6 +3,7 @@ import geometry.Face;
 import geometry.Mesh;
 import geometry.Ray;
 import geometry.Vec3f;
+import particle.Node;
 import processing.core.PApplet;
 import processing.event.MouseEvent;
 
@@ -10,9 +11,10 @@ public class PApp extends PApplet {
     public static PApp applet;
     public Camera camera;
     public Mesh mesh;
+    public Node n;
+
     public static final String objFolder = "./3d_model/";
-    public static final String objFile = "bunny.obj";
-    public Ray lastRay = null;
+    public static final String objFile = "house.obj";
 
     public void settings() {
         size(800, 600, P3D);
@@ -23,6 +25,7 @@ public class PApp extends PApplet {
         PApp.applet = this;
         camera = new Camera(this);
         mesh = new Mesh(this, loadShape(objFolder + objFile));
+        n = new Node(this, new Vec3f(50f, 10f, 50f), new Vec3f(1f, 0f, 0f));
     }
 
     public void draw(){
@@ -34,16 +37,12 @@ public class PApp extends PApplet {
         camera.use();
 
         directionalLight(255, 255, 255, 0, 0.3f, 1);
-        if(lastRay != null){
-            stroke(255);
-            line(lastRay.getOrigin().x, lastRay.getOrigin().y, lastRay.getOrigin().z, 
-                lastRay.getOrigin().x + 100000 * lastRay.getDirection().x,
-                lastRay.getOrigin().y + 100000 * lastRay.getDirection().y,
-                lastRay.getOrigin().z + 100000 * lastRay.getDirection().z);
-        }
 
         mesh.show();
         drawPlane(mesh.aabbmax.y);
+
+        showFocusTriangle();
+        n.show();
     }
 
     public void drawPlane(float y){
@@ -69,6 +68,25 @@ public class PApp extends PApplet {
         }
     }
 
+
+    private void showFocusTriangle() {
+        Ray ray = camera.getRay(mouseX, mouseY);
+        Face minFace = null;
+        float minDist = Float.MAX_VALUE;
+        for (Face f : mesh.faces) {
+            Vec3f tuv = new Vec3f(0f, 0f, 0f);
+            f.color = false;
+            if(f.intersectRayTriangle(ray, tuv)){
+                if(minFace == null || minDist > tuv.x) {
+                    minFace = f;
+                    minDist = tuv.x;
+                }
+            }
+        }
+        if(minFace != null)
+            minFace.color = true;
+    }
+
     public void keyPressed() {
         camera.keyPressed();
     }
@@ -78,17 +96,7 @@ public class PApp extends PApplet {
 
     public void mousePressed() {
         if(mouseButton == LEFT){
-            Ray ray = camera.getRay(mouseX, mouseY);
-            lastRay = ray;
-            System.out.println("A");
-            System.out.println(ray.getDirection().x + " : " + ray.getDirection().y + " : " +ray.getDirection().z);
-            for (Face f : mesh.faces) {
-                Vec3f tuv = new Vec3f(0f, 0f, 0f);
-                if(f.intersectRayTriangle(ray, tuv)){
-                    f.color = true;
-                    System.out.println("B");
-                }
-            }
+            
         }
         camera.mousePressed();
     }

@@ -18,9 +18,9 @@ public class Mesh {
     public Vec3f aabbmin = new Vec3f(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
     public Vec3f aabbmax= new Vec3f(-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE);
 
-    public static float SCALE = 1000f;
+    public static float SCALE = 1f;
     public static boolean reverseYaxis = true;
-    public static boolean stroke = false;
+    public static boolean stroke = true;
 
     public Mesh(PApplet p, PShape shape) {
         ArrayList<Triple<PVector>> triangles = new ArrayList<Triple<PVector>>();
@@ -100,9 +100,10 @@ public class Mesh {
         triangles.remove(0);
 
         int old = -1;
+        int a = 0;
         while (!triangles.isEmpty()) {
             if(old == triangles.size()){
-                System.err.println("Le chargement du mesh n'as pas pu s'effectué correctement.");  
+                System.err.println("Le chargement du mesh n'as pas pu s'effectuer correctement.\n" + a + " triangles ont été chargés correctement.");  
                 break;
             }
             old = triangles.size();
@@ -111,6 +112,7 @@ public class Mesh {
                 Triple<PVector> triangle = iterator.next();
                 HalfEdge existingHalfEdge = getExistingHalfEdge(triangle); 
                 if ( existingHalfEdge != null) {
+                    a ++;
                     PVector lastVertex;
                     if(!triangle.getA().equals(existingHalfEdge.vertex) && !triangle.getA().equals(existingHalfEdge.next.vertex))
                         lastVertex = triangle.getA();
