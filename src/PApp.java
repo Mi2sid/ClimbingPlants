@@ -29,9 +29,34 @@ public class PApp extends PApplet {
         camera.update();
         camera.use();
 
-        //fill(Colors.RED.argb);
-        //box(100);
+        directionalLight(255, 255, 255, 0, 0.3f, 1);
+
+
         mesh.show();
+        drawPlane(mesh.aabbmax.y);
+    }
+
+    public void drawPlane(float y){
+
+        noStroke();
+        int size = 10;
+        int tileSize = 200;
+        for(int i=-size; i<size; i++){
+            for(int j=-size; j<size; j ++){
+                if((i + j) % 2 == 0)
+                    fill(Colors.PLANE2.argb);
+                else
+                    fill(Colors.PLANE1.argb);
+                
+                beginShape(QUADS);
+                    vertex(i * tileSize, y, j * tileSize);
+                    vertex((i + 1) * tileSize, y, j * tileSize);
+                    vertex((i + 1) * tileSize, y, (j + 1) * tileSize);
+                    vertex(i * tileSize, y, (j + 1) * tileSize);
+                endShape();
+
+            }
+        }
     }
 
     public void keyPressed() {

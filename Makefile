@@ -19,7 +19,7 @@ build:
 	javac -cp "$(CP)" -d $(BIN) $(SRCS)
 
 run:
-	java -cp "$(BIN):$(CP)" -Djava.library.path=$(PROCESSING_PATH)/$(ARCH) $(MAIN)
+	java -Xmx8G -cp "$(BIN):$(CP)" -Djava.library.path=$(PROCESSING_PATH)/$(ARCH) $(MAIN)
 
 clean:
 	rm -rf $(BIN)

@@ -81,7 +81,7 @@ public class Camera {
     }
 
     protected Quatior data;
-    protected float rotationSpeed = 4f;
+    protected float rotationSpeed = 2f;
     protected float mouseSpeed = 0.7f;
     protected float zoomSpeed = 10f;
 
@@ -108,6 +108,12 @@ public class Camera {
             data.updatePosition(distance);
             return;
         }
+        if(pressedKeys.get(' ') == 1) {
+            data.right.y = 0f;
+            data.right.normalize();
+            data.updateUp();
+            pressedKeys.put(' ', (byte) 0);
+        }
 
 
         if(pressedKeys.containsValue((byte) 1)){
@@ -125,7 +131,7 @@ public class Camera {
     }
 
     public void resetPressedKeys(){
-        char[] allUsedKeys = { 'z', 'q', 's', 'd', 'a', 'e' };
+        char[] allUsedKeys = { 'z', 'q', 's', 'd', 'a', 'e', ' ' };
         for(char key : allUsedKeys)
             pressedKeys.put(key,(byte) 0);
     }

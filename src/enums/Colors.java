@@ -1,7 +1,9 @@
 package enums;
 
 public enum Colors {
-    BACKGROUND(75),
+    BACKGROUND(25),
+    PLANE1(100),
+    PLANE2(200),
     RED(200, 0, 0),
     GREEN(0, 200, 0);
 

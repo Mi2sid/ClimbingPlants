@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import enums.Colors;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PShape;
@@ -14,14 +13,16 @@ import struct.Triple;
 public class Mesh {
     public ArrayList<Face> faces = new ArrayList<Face>();
     private HashMap<HalfEdge, HalfEdge> halfedgesMap;
-    private ArrayList<Triple<PVector>> triangles = new ArrayList<Triple<PVector>>();
     private PApplet p;
-    private Vec3f aabbmin = new Vec3f(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
-    private Vec3f aabbmax= new Vec3f(-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE);
+    public Vec3f aabbmin = new Vec3f(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
+    public Vec3f aabbmax= new Vec3f(-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE);
 
-    private final static float SCALE = 1000f; 
+    public static float SCALE = 1000f;
+    public static boolean reverseYaxis = true;
+    public static boolean stroke = false;
 
     public Mesh(PApplet p, PShape shape) {
+        ArrayList<Triple<PVector>> triangles = new ArrayList<Triple<PVector>>();
         halfedgesMap = new HashMap<HalfEdge, HalfEdge>();
         this.p = p;
 
@@ -32,6 +33,12 @@ public class Mesh {
                 PVector v1 = child.getVertex(j).mult(SCALE);
                 PVector v2 = child.getVertex(j + 1).mult(SCALE);
                 PVector v3 = child.getVertex(j + 2).mult(SCALE);
+
+                if(reverseYaxis) {
+                    v1.y *= -1;
+                    v2.y *= -1;
+                    v3.y *= -1;
+                }
 
                 aabbmax = aabbmax.max(new Vec3f(v1));
                 aabbmin = aabbmin.min(new Vec3f(v1));
@@ -49,6 +56,7 @@ public class Mesh {
 
 
         Vec3f padding = Vec3f.mult(new Vec3f(aabbmin, aabbmax), -0.5f);
+        //padding.y = 0f;
         padding.add(Vec3f.mult(aabbmin, -1));
         for (Triple<PVector> t : triangles) {
             t = new Triple<PVector>(
@@ -57,7 +65,8 @@ public class Mesh {
                 t.getC().add(padding)
             );
         }
-
+        aabbmax.add(padding);
+        aabbmin.add(padding);
 
         // pour chaque triangle
 
@@ -89,7 +98,13 @@ public class Mesh {
 
         triangles.remove(0);
 
+        int old = -1;
         while (!triangles.isEmpty()) {
+            if(old == triangles.size()){
+                System.err.println("Le chargement du mesh n'as pas pu s'effectué correctement.");  
+                break;
+            }
+            old = triangles.size();
             Iterator<Triple<PVector>> iterator = triangles.iterator();
             while (iterator.hasNext()) {
                 Triple<PVector> triangle = iterator.next();
@@ -112,10 +127,6 @@ public class Mesh {
                     h2.setNext(h1);
                     h3.setNext(h2);
 
-                    // h1.vertex.add(padding);
-                    // h2.vertex.add(padding);
-                    // h3.vertex.add(padding);
-
                     existingHalfEdge.setTwin(h2);
                     h2.setTwin(existingHalfEdge);
 
@@ -134,6 +145,12 @@ public class Mesh {
                 }
             }
         }
+        halfedgesMap.clear();
+    }
+
+    float roundToPrecision(float value, int precision) {
+        float scale = (float) Math.pow(10, precision);
+        return Math.round(value * scale) / scale;
     }
 
     private HalfEdge getExistingHalfEdge(Triple<PVector> triangle){
@@ -168,7 +185,10 @@ public class Mesh {
     }
     
     public void show() {
-        p.noStroke();
+        if(stroke)
+            p.stroke(0);
+        else
+            p.noStroke();
 
         for(Face f : faces){
             int color = getColor(f.he.next.vertex, f.he.vertex, f.he.next.next.vertex);
