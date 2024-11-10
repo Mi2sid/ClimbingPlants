@@ -18,6 +18,12 @@ public class Vec3f extends PVector {
         this(b.x - a.x, b.y - a.y, b.z - a.z);
     }
 
+    public void add(Vec3f v){
+        this.x += v.x;
+        this.y += v.y;
+        this.z += v.z;
+    }
+
     public Vec3f cross(Vec3f v){
         return new Vec3f(super.cross((PVector) v));
     }
@@ -29,6 +35,15 @@ public class Vec3f extends PVector {
     public static Vec3f mult(Vec3f v, float k){
         return new Vec3f(PVector.mult(v, k));
     }
+
+    public Vec3f max(Vec3f v){
+        return new Vec3f(Math.max(v.x, this.x), Math.max(v.y, this.y), Math.max(v.z, this.z));
+    }
+
+    public Vec3f min(Vec3f v){
+        return new Vec3f(Math.min(v.x, this.x), Math.min(v.y, this.y), Math.min(v.z, this.z));
+    }
+
 
     @Override
     public boolean equals(Object obj) {
