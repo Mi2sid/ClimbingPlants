@@ -18,10 +18,15 @@ public class Vec3f extends PVector {
         this(b.x - a.x, b.y - a.y, b.z - a.z);
     }
 
-    public void add(Vec3f v){
+    public Vec3f add(Vec3f v){
         this.x += v.x;
         this.y += v.y;
         this.z += v.z;
+        return this;
+    }
+
+    public Vec3f copy() {
+        return new Vec3f(this.x, this.y, this.z);
     }
 
     public Vec3f cross(Vec3f v){

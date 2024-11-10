@@ -1,5 +1,6 @@
 import java.util.HashMap;
 
+import geometry.Ray;
 import geometry.Vec3f;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -80,22 +81,27 @@ public class Camera {
         }
     }
 
-    protected Quatior data;
-    protected float rotationSpeed = 2f;
-    protected float mouseSpeed = 0.7f;
-    protected float zoomSpeed = 10f;
-
-    protected float distance = 500f;
-    protected PApplet p;
-    protected HashMap<Character, Byte> pressedKeys = new HashMap<Character, Byte>();
+    private Quatior data;
+    private float rotationSpeed = 2f;
+    private float mouseSpeed = 0.7f;
+    private float zoomSpeed = 10f;
     
-    protected boolean isDragged = false;
-    protected PVector oldPosition;
+    public final float fov = 60f;
+    public final PVector limits = new PVector(1, 100000);
+
+    private float distance = 500f;
+    private PApplet p;
+    private HashMap<Character, Byte> pressedKeys = new HashMap<Character, Byte>();
+    
+    private boolean isDragged = false;
+    private PVector oldPosition;
     
     Camera(PApplet p){
         this.p = p;
         this.data = new Quatior(distance);
         resetPressedKeys();
+
+        p.perspective(PConstants.PI / 3, (float) p.width / (float) p.height, limits.x, limits.y);
     }
     
     public void update() {
@@ -112,6 +118,10 @@ public class Camera {
             data.right.y = 0f;
             data.right.normalize();
             data.updateUp();
+            if(data.up.y < 0){
+                data.up.y *= -1;
+                data.updateRight();
+            }
             pressedKeys.put(' ', (byte) 0);
         }
 
@@ -124,7 +134,7 @@ public class Camera {
             data.rotateAroundUp(PApplet.radians(rotationSpeed) * qd);
 
             int ae = -((int) pressedKeys.get('a')) + (int) pressedKeys.get('e'); 
-            distance = PApplet.max(0f, distance + zoomSpeed * ae);
+            distance = PApplet.max(1f, distance + zoomSpeed * ae);
         
             data.updatePosition(distance);
         }
@@ -189,6 +199,26 @@ public class Camera {
                 break;
         }
     } 
+
+    public Ray getRay(int i, int j) {
+        
+        float aspectRatio = (float) p.width / (float) p.height;
+        float planeWidth =  0.18f * PApplet.tan(fov / 2f) * limits.x * aspectRatio;
+        float planeHeight = 0.18f * PApplet.tan(fov / 2f) * limits.x;
+      
+        float x = ((float) i / (float) p.width) - 0.5f;
+        float y = ((float) j / (float) p.height) - 0.5f;
+
+        Vec3f target = data.position.copy();
+
+        target.add(data.front.copy().mult(limits.x));
+        target.add(data.up.copy().mult(-y * planeHeight));
+        target.add(data.right.copy().mult(x * planeWidth));
+
+        Vec3f direction = new Vec3f(data.position, target).normalize();
+
+        return new Ray(data.position.copy(), direction);
+      }
 
     public void mouseWheel(MouseEvent e){
         distance = PApplet.max(0f, distance + zoomSpeed * e.getCount());

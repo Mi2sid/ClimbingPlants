@@ -1,5 +1,8 @@
 import enums.Colors;
+import geometry.Face;
 import geometry.Mesh;
+import geometry.Ray;
+import geometry.Vec3f;
 import processing.core.PApplet;
 import processing.event.MouseEvent;
 
@@ -9,6 +12,7 @@ public class PApp extends PApplet {
     public Mesh mesh;
     public static final String objFolder = "./3d_model/";
     public static final String objFile = "bunny.obj";
+    public Ray lastRay = null;
 
     public void settings() {
         size(800, 600, P3D);
@@ -30,7 +34,13 @@ public class PApp extends PApplet {
         camera.use();
 
         directionalLight(255, 255, 255, 0, 0.3f, 1);
-
+        if(lastRay != null){
+            stroke(255);
+            line(lastRay.getOrigin().x, lastRay.getOrigin().y, lastRay.getOrigin().z, 
+                lastRay.getOrigin().x + 100000 * lastRay.getDirection().x,
+                lastRay.getOrigin().y + 100000 * lastRay.getDirection().y,
+                lastRay.getOrigin().z + 100000 * lastRay.getDirection().z);
+        }
 
         mesh.show();
         drawPlane(mesh.aabbmax.y);
@@ -67,6 +77,19 @@ public class PApp extends PApplet {
     }
 
     public void mousePressed() {
+        if(mouseButton == LEFT){
+            Ray ray = camera.getRay(mouseX, mouseY);
+            lastRay = ray;
+            System.out.println("A");
+            System.out.println(ray.getDirection().x + " : " + ray.getDirection().y + " : " +ray.getDirection().z);
+            for (Face f : mesh.faces) {
+                Vec3f tuv = new Vec3f(0f, 0f, 0f);
+                if(f.intersectRayTriangle(ray, tuv)){
+                    f.color = true;
+                    System.out.println("B");
+                }
+            }
+        }
         camera.mousePressed();
     }
     

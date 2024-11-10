@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import enums.Colors;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PShape;
@@ -192,9 +193,10 @@ public class Mesh {
 
         for(Face f : faces){
             int color = getColor(f.he.next.vertex, f.he.vertex, f.he.next.next.vertex);
-
             HalfEdge current = f.he;
             p.fill(color);
+            if(f.color)
+                p.fill(Colors.RED.argb);
             p.beginShape(PConstants.TRIANGLES);
             do {
                 p.vertex(current.vertex.x, current.vertex.y, current.vertex.z);
