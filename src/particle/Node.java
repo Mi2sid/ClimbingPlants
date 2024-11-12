@@ -1,18 +1,22 @@
 package particle;
 
+import enums.Colors;
+import geometry.Face;
 import geometry.Vec3f;
 import processing.core.PApplet;
 
 public class Node {
     private Vec3f position;
     private Vec3f size;
-    private Vec3f direction;
+    public Vec3f direction;
+    public Face face;
     private PApplet p;
 
-    public Node(PApplet p, Vec3f position, Vec3f direction) {
+    public Node(PApplet p, Face f, Vec3f position, Vec3f direction) {
         this.p = p;
+        this.face = f;
         this.position = position;
-        this.direction = direction;
+        this.direction = direction.normalize();
         size = new Vec3f(0.2f, 0.5f, 0.2f);
     }
 
@@ -27,7 +31,7 @@ public class Node {
         p.rotate(angle, axis.x, axis.y, axis.z);
         
         p.scale(size.x, size.y, size.z);
-        p.fill(0, 255, 255, 128); 
+        p.fill(Colors.PARTICLE.argb); 
         p.sphere(10);
         
         p.popMatrix();

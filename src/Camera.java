@@ -221,7 +221,8 @@ public class Camera {
       }
 
     public void mouseWheel(MouseEvent e){
-        distance = PApplet.max(0f, distance + zoomSpeed * e.getCount());
+        distance = PApplet.max(1f, distance + zoomSpeed * e.getCount());
+        
         data.updatePosition(distance);
     }
 

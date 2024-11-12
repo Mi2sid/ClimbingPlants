@@ -5,7 +5,9 @@ public enum Colors {
     PLANE1(100),
     PLANE2(200),
     RED(200, 0, 0),
-    GREEN(0, 200, 0);
+    FOCUS_FACE(255),
+    GREEN(0, 200, 0),
+    PARTICLE(0, 200, 100, 128);
 
     public final int argb;
 

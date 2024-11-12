@@ -85,7 +85,7 @@ public class Mesh {
 
 
 
-        Face f = new Face(h1);
+        Face f = new Face(p, h1);
 
         h1.setFace(f);
         h2.setFace(f);
@@ -133,7 +133,7 @@ public class Mesh {
                     existingHalfEdge.setTwin(h2);
                     h2.setTwin(existingHalfEdge);
 
-                    f = new Face(h1);
+                    f = new Face(p, h1);
                     h1.setFace(f);
                     h2.setFace(f);
                     h3.setFace(f);
@@ -149,11 +149,6 @@ public class Mesh {
             }
         }
         halfedgesMap.clear();
-    }
-
-    float roundToPrecision(float value, int precision) {
-        float scale = (float) Math.pow(10, precision);
-        return Math.round(value * scale) / scale;
     }
 
     private HalfEdge getExistingHalfEdge(Triple<PVector> triangle){
@@ -173,19 +168,6 @@ public class Mesh {
             return exist;
         return halfedgesMap.get(h3);
     }
-
-
-    public int getColor(Vec3f A, Vec3f B, Vec3f C) {
-        Vec3f AB = new Vec3f(A, B);
-        Vec3f AC = new Vec3f(A, C);
-    
-        Vec3f crossProduct = AB.cross(AC);
-        crossProduct.normalize();
-        int r = (int) ((crossProduct.x + 1) * 127.5);
-        int g = (int) ((crossProduct.y + 1) * 127.5);
-        int b = (int) ((crossProduct.z + 1) * 127.5);
-        return (255 << 24) | (r << 16) | (g << 8) | b;
-    }
     
     public void show() {
         if(stroke)
@@ -194,18 +176,7 @@ public class Mesh {
             p.noStroke();
 
         for(Face f : faces){
-            int color = getColor(f.he.next.vertex, f.he.vertex, f.he.next.next.vertex);
-            HalfEdge current = f.he;
-            p.fill(color);
-            if(f.color)
-                p.fill(Colors.RED.argb);
-            p.beginShape(PConstants.TRIANGLES);
-            do {
-                p.vertex(current.vertex.x, current.vertex.y, current.vertex.z);
-                current = current.next;
-            } while (!f.he.equals(current));
-
-            p.endShape();
+            f.show();
         }
     }
 

@@ -49,6 +49,15 @@ public class Vec3f extends PVector {
         return new Vec3f(Math.min(v.x, this.x), Math.min(v.y, this.y), Math.min(v.z, this.z));
     }
 
+    public boolean isPresqueNull(){
+        double epsilon = 1e-6;
+        if(x < epsilon && x > -epsilon)
+            if(y < epsilon && y > -epsilon)
+                if(z < epsilon && z > -epsilon)
+                    return true;
+        return false;
+    }
+
 
     @Override
     public boolean equals(Object obj) {

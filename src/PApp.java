@@ -4,20 +4,24 @@ import geometry.Mesh;
 import geometry.Ray;
 import geometry.Vec3f;
 import particle.Node;
+import particle.Strcuture;
 import processing.core.PApplet;
 import processing.event.MouseEvent;
+import struct.Pair;
 
 public class PApp extends PApplet {
     public static PApp applet;
     public Camera camera;
     public Mesh mesh;
-    public Node n;
+    public Strcuture s;
+    public Vec3f focusTri;
+    public Face focusFace;
 
     public static final String objFolder = "./3d_model/";
     public static final String objFile = "house.obj";
 
     public void settings() {
-        size(800, 600, P3D);
+        size(1080, 720, P3D);
     }
 
     public void setup() {
@@ -25,7 +29,10 @@ public class PApp extends PApplet {
         PApp.applet = this;
         camera = new Camera(this);
         mesh = new Mesh(this, loadShape(objFolder + objFile));
-        n = new Node(this, new Vec3f(50f, 10f, 50f), new Vec3f(1f, 0f, 0f));
+        s = new Strcuture();
+        s.add(new Node(this, null ,new Vec3f(0f, 0f, 0f), new Vec3f(0f, 1f, 0f)));
+        focusTri = null;
+        focusFace = null;
     }
 
     public void draw(){
@@ -38,11 +45,12 @@ public class PApp extends PApplet {
 
         directionalLight(255, 255, 255, 0, 0.3f, 1);
 
+        showFocusTriangle();
         mesh.show();
+
         drawPlane(mesh.aabbmax.y);
 
-        showFocusTriangle();
-        n.show();
+        s.show();
     }
 
     public void drawPlane(float y){
@@ -71,20 +79,23 @@ public class PApp extends PApplet {
 
     private void showFocusTriangle() {
         Ray ray = camera.getRay(mouseX, mouseY);
-        Face minFace = null;
+        focusFace = null;
+        focusTri = null;
         float minDist = Float.MAX_VALUE;
+
         for (Face f : mesh.faces) {
             Vec3f tuv = new Vec3f(0f, 0f, 0f);
             f.color = false;
             if(f.intersectRayTriangle(ray, tuv)){
-                if(minFace == null || minDist > tuv.x) {
-                    minFace = f;
+                if(focusFace == null || minDist > tuv.x) {
+                    focusFace = f;
                     minDist = tuv.x;
+                    focusTri = tuv.copy();
                 }
             }
         }
-        if(minFace != null)
-            minFace.color = true;
+        if(focusFace != null)
+            focusFace.color = true;
     }
 
     public void keyPressed() {
@@ -95,8 +106,28 @@ public class PApp extends PApplet {
     }
 
     public void mousePressed() {
-        if(mouseButton == LEFT){
+        if(mouseButton == LEFT && focusFace != null){
             
+            Vec3f point = focusFace.getPointInTriangle(focusTri.y, focusTri.z);
+            Pair<Vec3f, Vec3f> dirNorm = s.lastOrientation();
+            Vec3f dir = dirNorm.G.copy();
+            float d = dir.dot(focusFace.normal);
+            Vec3f projectedDir = new Vec3f(Vec3f.mult(focusFace.normal, d), dir);
+            System.out.println( "(" +projectedDir.x + ";" +projectedDir.y + ";" + projectedDir.z + ")" );
+
+            if(projectedDir.isPresqueNull()){
+                Vec3f edge = focusFace.normal.cross(dirNorm.D.copy());
+                Vec3f reference = new Vec3f(0, 1, 0);
+                float dotProduct = edge.dot(reference);
+                if(dotProduct < 0){
+                    projectedDir = dirNorm.D.copy().normalize();
+                } else {
+                    projectedDir = Vec3f.mult(dirNorm.D.copy(), -1f).normalize();
+                }
+                System.out.println( "AHAHAH : (" +projectedDir.x + ";" +projectedDir.y + ";" + projectedDir.z + ")" );
+
+            }
+            s.add(new Node(this, focusFace, point, projectedDir.normalize()));
         }
         camera.mousePressed();
     }
