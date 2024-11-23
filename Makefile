@@ -1,5 +1,5 @@
 # set your processing library path
-PROCESSING_PATH = /home/noahd/processing-4.3/core/library
+PROCESSING_PATH = /home/dufaudn/.processing-4.3/core/library
 # set your architecture
 ARCH = linux-amd64
 

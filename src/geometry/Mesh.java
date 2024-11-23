@@ -132,12 +132,24 @@ public class Mesh {
 
                     existingHalfEdge.setTwin(h2);
                     h2.setTwin(existingHalfEdge);
+                    
+                    HalfEdge t1 = halfedgesMap.get(h1);
+                    HalfEdge t3 = halfedgesMap.get(h3);
 
+                    if(t1 != null){
+                        t1.setTwin(h1);
+                        h1.setTwin(t1);
+                    } 
+                    if(t3 != null){
+                        t3.setTwin(h3);
+                        h3.setTwin(t3);
+                    }
+                    
                     f = new Face(p, h1);
                     h1.setFace(f);
                     h2.setFace(f);
                     h3.setFace(f);
-
+                    
 
                     halfedgesMap.put(h1, h1);
                     halfedgesMap.put(h2, h2);
@@ -148,6 +160,7 @@ public class Mesh {
                 }
             }
         }
+
         halfedgesMap.clear();
     }
 

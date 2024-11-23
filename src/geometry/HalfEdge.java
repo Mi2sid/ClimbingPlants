@@ -3,9 +3,9 @@ package geometry;
 import processing.core.PVector;
 
 public class HalfEdge {
-    Vec3f vertex;
-    Face face = null;
-    HalfEdge next = null, twin = null;
+    public Vec3f vertex;
+    public Face face = null;
+    public HalfEdge next = null, twin = null;
 
     public HalfEdge(Vec3f v) {
         vertex = v;

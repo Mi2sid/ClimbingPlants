@@ -7,7 +7,8 @@ import particle.Node;
 import particle.Strcuture;
 import processing.core.PApplet;
 import processing.event.MouseEvent;
-import struct.Pair;
+
+import struct.Triple;
 
 public class PApp extends PApplet {
     public static PApp applet;
@@ -29,8 +30,8 @@ public class PApp extends PApplet {
         PApp.applet = this;
         camera = new Camera(this);
         mesh = new Mesh(this, loadShape(objFolder + objFile));
-        s = new Strcuture();
-        s.add(new Node(this, null ,new Vec3f(0f, 0f, 0f), new Vec3f(0f, 1f, 0f)));
+        s = new Strcuture(this);
+        s.add(new Node(this, null ,new Vec3f(0f, 0f, 0f), new Vec3f(0f, -1f, 0f)));
         focusTri = null;
         focusFace = null;
     }
@@ -99,6 +100,9 @@ public class PApp extends PApplet {
     }
 
     public void keyPressed() {
+        if(key == 'p')
+            s.newNode(s.getLast());
+
         camera.keyPressed();
     }
     public void keyReleased(){
@@ -109,28 +113,20 @@ public class PApp extends PApplet {
         if(mouseButton == LEFT && focusFace != null){
             
             Vec3f point = focusFace.getPointInTriangle(focusTri.y, focusTri.z);
-            Pair<Vec3f, Vec3f> dirNorm = s.lastOrientation();
-            Vec3f dir = dirNorm.G.copy();
-            float d = dir.dot(focusFace.normal);
-            Vec3f projectedDir = new Vec3f(Vec3f.mult(focusFace.normal, d), dir);
-            System.out.println( "(" +projectedDir.x + ";" +projectedDir.y + ";" + projectedDir.z + ")" );
+            
+            Triple<Vec3f> dirNormPos = s.lastOrientation();
+            
+            Vec3f projectedDir = Vec3f.getOrientation(dirNormPos, focusFace, point);
 
-            if(projectedDir.isPresqueNull()){
-                Vec3f edge = focusFace.normal.cross(dirNorm.D.copy());
-                Vec3f reference = new Vec3f(0, 1, 0);
-                float dotProduct = edge.dot(reference);
-                if(dotProduct < 0){
-                    projectedDir = dirNorm.D.copy().normalize();
-                } else {
-                    projectedDir = Vec3f.mult(dirNorm.D.copy(), -1f).normalize();
-                }
-                System.out.println( "AHAHAH : (" +projectedDir.x + ";" +projectedDir.y + ";" + projectedDir.z + ")" );
-
-            }
-            s.add(new Node(this, focusFace, point, projectedDir.normalize()));
+            if(projectedDir.isPresqueNull() && dirNormPos.getB().equals(new Vec3f(0, 0, 0))) 
+                System.out.println("Impossible de placer une graine à la perpendiculaire, détermination de l'orientation impossible");
+            else
+                s.add(new Node(this, focusFace, point, projectedDir));
         }
         camera.mousePressed();
     }
+
+
     
     public void mouseReleased() {
         camera.mouseReleased();

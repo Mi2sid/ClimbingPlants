@@ -6,7 +6,7 @@ import geometry.Vec3f;
 import processing.core.PApplet;
 
 public class Node {
-    private Vec3f position;
+    public Vec3f position;
     private Vec3f size;
     public Vec3f direction;
     public Face face;
@@ -21,6 +21,7 @@ public class Node {
     }
 
     public void show() {
+        p.noStroke();
         p.pushMatrix();
         
         p.translate(position.x, position.y, position.z);
@@ -34,7 +35,14 @@ public class Node {
         p.fill(Colors.PARTICLE.argb); 
         p.sphere(10);
         
+
         p.popMatrix();
+
+        p.stroke(Colors.FOCUS_FACE.argb);
+        p.stroke(255);
+
+        p.line(position.x, position.y, position.z, position.x + direction.x * 10, position.y + direction.y *10, position.z + direction.z* 10);
+
 
     }
 
