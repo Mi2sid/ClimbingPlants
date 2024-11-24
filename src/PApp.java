@@ -31,7 +31,7 @@ public class PApp extends PApplet {
         camera = new Camera(this);
         mesh = new Mesh(this, loadShape(objFolder + objFile));
         s = new Strcuture(this);
-        s.add(new Node(this, null ,new Vec3f(0f, 0f, 0f), new Vec3f(0f, -1f, 0f)));
+        s.add(new Node(this, null ,new Vec3f(0f, 0f, 0f), new Vec3f(0f, -1f, 0f), null));
         focusTri = null;
         focusFace = null;
     }
@@ -101,7 +101,7 @@ public class PApp extends PApplet {
 
     public void keyPressed() {
         if(key == 'p')
-            s.newNode(s.getLast());
+            s.updatePlant();
 
         camera.keyPressed();
     }
@@ -114,14 +114,17 @@ public class PApp extends PApplet {
             
             Vec3f point = focusFace.getPointInTriangle(focusTri.y, focusTri.z);
             
-            Triple<Vec3f> dirNormPos = s.lastOrientation();
+            Triple<Vec3f> dirNormPos = s.getData(0);
             
             Vec3f projectedDir = Vec3f.getOrientation(dirNormPos, focusFace, point);
 
             if(projectedDir.isPresqueNull() && dirNormPos.getB().equals(new Vec3f(0, 0, 0))) 
                 System.out.println("Impossible de placer une graine à la perpendiculaire, détermination de l'orientation impossible");
-            else
-                s.add(new Node(this, focusFace, point, projectedDir));
+            else{
+                for(int i = 0; i<5; i++)
+                    s.add(new Node(this, focusFace, point, projectedDir, s.s.get(0)));
+
+            }
         }
         camera.mousePressed();
     }

@@ -51,7 +51,7 @@ public class Vec3f extends PVector {
     }
 
     public boolean isPresqueNull(){
-        double epsilon = 1e-2;
+        double epsilon = 1e-1;
         if(x < epsilon && x > -epsilon)
             if(y < epsilon && y > -epsilon)
                 if(z < epsilon && z > -epsilon)
@@ -110,6 +110,10 @@ public class Vec3f extends PVector {
                 Vec3f vectorXP = new Vec3f(point, oldPoint);
                 float dotProduct = vectorXP.dot(newNorm);
                 System.out.println("par ici : " + dotProduct);
+                Vec3f m = Vec3f.mult(focusFace.he.vertex.copy().add(focusFace.he.next.vertex).add(focusFace.he.next.next.vertex), 1f/3f);
+
+                //projectedDir = new Vec3f(point, m).normalize();
+                float tmp = 0;
                 if (dotProduct > 0) {
                     projectedDir = Vec3f.mult(oldNorm.copy(), 1);
                 } else {
@@ -119,6 +123,18 @@ public class Vec3f extends PVector {
 
             return projectedDir.projOnto(newNorm).normalize();
     }
+
+
+    public static Vec3f rotateAroundAxis(Vec3f v, Vec3f axis, float theta) {
+        axis = axis.normalize();
+      
+        Vec3f part1 = Vec3f.mult(v.copy(), (float) Math.cos(theta));
+        Vec3f part2 = Vec3f.mult(axis.cross(v) , (float) Math.sin(theta));
+        Vec3f part3 = Vec3f.mult(axis.copy(), (float) (axis.dot(v) * (1 - Math.cos(theta))));
+      
+        return part1.add(part2).add(part3);
+      }
+      
 
     @Override
     public String toString(){

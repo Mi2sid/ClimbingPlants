@@ -10,13 +10,17 @@ public class Node {
     private Vec3f size;
     public Vec3f direction;
     public Face face;
+    public Node parent;
+    public static final float spawnProb = 0.1f;
+    public static final float varProb = 40f;
     private PApplet p;
 
-    public Node(PApplet p, Face f, Vec3f position, Vec3f direction) {
+    public Node(PApplet p, Face f, Vec3f position, Vec3f direction, Node parent) {
         this.p = p;
         this.face = f;
         this.position = position;
         this.direction = direction.normalize();
+        this.parent = parent;
         size = new Vec3f(0.2f, 0.5f, 0.2f);
     }
 
@@ -38,12 +42,9 @@ public class Node {
 
         p.popMatrix();
 
-        p.stroke(Colors.FOCUS_FACE.argb);
-        p.stroke(255);
+        // p.stroke(Colors.FOCUS_FACE.argb);
+        // p.stroke(255);
 
         p.line(position.x, position.y, position.z, position.x + direction.x * 10, position.y + direction.y *10, position.z + direction.z* 10);
-
-
     }
-
 }

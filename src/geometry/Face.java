@@ -86,9 +86,8 @@ public class Face {
         } while (!he.equals(current));
         p.endShape();
 
-        p.stroke(255);
         Vec3f m = Vec3f.mult(he.vertex.copy().add(he.next.vertex).add(he.next.next.vertex), 1f/3f);
-        p.line(m.x, m.y, m.z, m.x + normal.x * 5, m.y + normal.y * 5, m.z + normal.z * 5);
+        //p.line(m.x, m.y, m.z, m.x + normal.x * 5, m.y + normal.y * 5, m.z + normal.z * 5);
     }
 
     public boolean isIn(Vec3f position){
@@ -160,9 +159,12 @@ public class Face {
             cote = he;
         else if(cote.equals(he.next))
             cote = he.next;
-        else
+        else if(cote.equals(he.next.next))
             cote = he.next.next;
-
+        else
+            return null;
+        if(cote.twin == null)  
+            return null; 
         return cote.twin.face;
     }
 
