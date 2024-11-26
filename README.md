@@ -42,3 +42,9 @@ launch.bat
 ```
 
 Or double-click the icon in Windows File Explorer.
+
+## Troubleshooting
+
+If your 3D model is too heavy, the JVM may fail to allocate enough memory.
+
+- Increase the maximum memory allocation for the JVM (e.g., from 4G to 8G) with the variable `POWER` in `Makefile` or `launch.bat`.

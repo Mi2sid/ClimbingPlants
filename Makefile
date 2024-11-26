@@ -1,5 +1,7 @@
 # set your processing library path
 PROCESSING_PATH = /home/dufaudn/.processing-4.3/core/library
+POWER = 4G
+
 ARCH = linux-amd64
 
 SRC = src
@@ -18,7 +20,7 @@ build:
 	javac -cp "$(CP)" -d $(BIN) $(SRCS)
 
 run:
-	java -Xmx8G -cp "$(BIN):$(CP)" -Djava.library.path=$(PROCESSING_PATH)/$(ARCH) $(MAIN)
+	java -Xmx$(POWER) -cp "$(BIN):$(CP)" -Djava.library.path=$(PROCESSING_PATH)/$(ARCH) $(MAIN)
 
 clean:
 	rm -rf $(BIN)

@@ -11,8 +11,8 @@ public class Node {
     public Vec3f direction;
     public Face face;
     public Node parent;
-    public static final float spawnProb = 0.08f;
-    public static final float varProb = 30f;
+    public static final float spawnProb = 0.12f;
+    public static final float varProb = 50f;
     private PApplet p;
 
     public Node(PApplet p, Face f, Vec3f position, Vec3f direction, Node parent) {
