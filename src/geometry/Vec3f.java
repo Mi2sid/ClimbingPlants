@@ -109,7 +109,7 @@ public class Vec3f extends PVector {
 
                 Vec3f vectorXP = new Vec3f(point, oldPoint);
                 float dotProduct = vectorXP.dot(newNorm);
-                System.out.println("par ici : " + dotProduct);
+                //System.out.println("par ici : " + dotProduct);
                 Vec3f m = Vec3f.mult(focusFace.he.vertex.copy().add(focusFace.he.next.vertex).add(focusFace.he.next.next.vertex), 1f/3f);
 
                 //projectedDir = new Vec3f(point, m).normalize();

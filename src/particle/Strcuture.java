@@ -15,6 +15,7 @@ public class Strcuture {
     public ArrayList<Node> top;
     public ArrayList<Node> tmp;
     private PApplet p;
+    static final int MAXENGJ = 20;
 
     public Strcuture(PApplet p){
         s = new ArrayList<Node>();
@@ -61,18 +62,18 @@ public class Strcuture {
         orientation = Vec3f.getOrientation(last, newFace, position);
         float random = p.random(-Node.varProb, Node.varProb);
         orientation = Vec3f.rotateAroundAxis(orientation, newFace.normal, PApplet.radians(random));
-        System.out.println(random);
+        //System.out.println(random);
 
         int energyImportance = energyUpdate(n, 0);
         for(int i=0; i<80; i++){
             position.add(Vec3f.mult(orientation, 0.1f));
             if (newFace.isIn(position)) {
                 energyImportance = energyUpdate(n, energyImportance);
-                //System.out.println("Le point X' est à l'intérieur du triangle.");
+                ////System.out.println("Le point X' est à l'intérieur du triangle.");
             } else {
-                System.out.println("On change de face.");
+                //System.out.println("On change de face.");
                 energyImportance = processEnergy(n, energyImportance);
-                if(energyImportance > 20)
+                if(energyImportance > MAXENGJ)
                     return;
                 newFace = newFace.findOtherFace(last.getC(), orientation);
 
@@ -116,9 +117,12 @@ public class Strcuture {
         return new Triple<Vec3f>(s.get(i).direction, s.get(i).face.normal, s.get(i).position);
     }
 
+    // TODO
     private int processEnergy(Node n, int x){
         return x+1;
     }
+    
+    // TODO
     private int energyUpdate(Node n, int x) {
         return 0;
     }

@@ -20,6 +20,7 @@ public class PApp extends PApplet {
 
     public static final String objFolder = "./3d_model/";
     public static final String objFile = "house.obj";
+    public static final int start = 2;
 
     public void settings() {
         size(1080, 720, P3D);
@@ -118,10 +119,10 @@ public class PApp extends PApplet {
             
             Vec3f projectedDir = Vec3f.getOrientation(dirNormPos, focusFace, point);
 
-            if(projectedDir.isPresqueNull() && dirNormPos.getB().equals(new Vec3f(0, 0, 0))) 
-                System.out.println("Impossible de placer une graine à la perpendiculaire, détermination de l'orientation impossible");
+            if(projectedDir.isPresqueNull() && dirNormPos.getB().equals(new Vec3f(0, 0, 0))){}
+                //System.out.println("Impossible de placer une graine à la perpendiculaire, détermination de l'orientation impossible");
             else{
-                for(int i = 0; i<5; i++)
+                for(int i = 0; i<start; i++)
                     s.add(new Node(this, focusFace, point, projectedDir, s.s.get(0)));
 
             }

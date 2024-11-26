@@ -53,7 +53,7 @@ public class Mesh {
                 triangles.add(new Triple<PVector>(v1, v2, v3));
             }
         }
-        System.out.println("Min : x"+ aabbmin.x + "  y" + aabbmin.y + " z" + aabbmin.y + "\nMax : x"+ aabbmax.x + "  y" + aabbmax.y + " z" + aabbmax.y);
+        //System.out.println("Min : x"+ aabbmin.x + "  y" + aabbmin.y + " z" + aabbmin.y + "\nMax : x"+ aabbmax.x + "  y" + aabbmax.y + " z" + aabbmax.y);
 
 
         Vec3f padding = Vec3f.mult(new Vec3f(aabbmin, aabbmax), -0.5f);
